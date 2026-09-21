@@ -23,6 +23,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -31,29 +32,47 @@ export default function RegisterPage() {
       return;
     }
     setBusy(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { display_name: name.trim() } },
     });
     setBusy(false);
     if (error) toast.error(error.message);
-    else setDone(true);
+    else {
+      // With email confirmation switched off, Supabase signs the user in
+      // straight away and returns a session.
+      setSignedIn(!!data.session);
+      setDone(true);
+    }
   }
 
   if (done) {
     return (
       <div className="mx-auto flex max-w-md flex-col items-center px-4 py-24 text-center">
         <CheckCircle2 className="mb-4 size-14 text-primary" />
-        <h1 className="text-2xl font-bold">Almost there!</h1>
-        <p className="mt-3 leading-relaxed text-muted-foreground">
-          We&apos;ve sent a confirmation link to <strong>{email}</strong>. Click
-          it to verify your email, then sign in. A SIG convenor will approve
-          your membership shortly after — you&apos;ll then be able to create
-          your profile, write posts and share research.
-        </p>
+        <h1 className="text-2xl font-bold">
+          {signedIn ? "Welcome aboard!" : "Almost there!"}
+        </h1>
+        {signedIn ? (
+          <p className="mt-3 leading-relaxed text-muted-foreground">
+            Your account has been created and you are now signed in. A SIG
+            convenor will approve your membership shortly. In the meantime,
+            please complete your profile.
+          </p>
+        ) : (
+          <p className="mt-3 leading-relaxed text-muted-foreground">
+            We&apos;ve sent a confirmation link to <strong>{email}</strong>.
+            Click it to verify your email, then sign in. A SIG convenor will
+            approve your membership shortly after.
+          </p>
+        )}
         <Button asChild className="mt-6">
-          <Link href="/login/">Go to sign in</Link>
+          {signedIn ? (
+            <Link href="/account/">Complete my profile</Link>
+          ) : (
+            <Link href="/login/">Go to sign in</Link>
+          )}
         </Button>
       </div>
     );
