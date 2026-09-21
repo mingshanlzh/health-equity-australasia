@@ -1,0 +1,20 @@
+name: Keep Supabase awake
+# Free-tier Supabase projects pause after ~7 days without activity.
+# This makes a tiny read request twice a week so the site stays live.
+on:
+  schedule:
+    - cron: "0 21 * * 1,4"   # Mon & Thu 21:00 UTC (Tue & Fri morning in Sydney)
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: sb_publishable_eVIq7_PS-q-yeIpOlOzopg_FYeuw0Jj" \
+            "https://oxwqkyiabjlzgphykkyg.supabase.co/rest/v1/seminars?select=id&limit=1")
+          echo "Supabase responded with HTTP $code"
+          test "$code" = "200"
