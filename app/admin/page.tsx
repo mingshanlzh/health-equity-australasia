@@ -81,6 +81,20 @@ export default function AdminPage() {
     }
   }
 
+  async function approveAll(list: Profile[]) {
+    if (list.length === 0) return;
+    if (!confirm(`Approve all ${list.length} pending account(s)?`)) return;
+    const { error } = await supabase
+      .from("profiles")
+      .update({ role: "member" })
+      .in("id", list.map((p) => p.id));
+    if (error) toast.error(error.message);
+    else {
+      toast.success(`Approved ${list.length} member(s)`);
+      load();
+    }
+  }
+
   async function deleteMessage(m: ContactMessage) {
     const { error } = await supabase
       .from("contact_messages")
@@ -146,6 +160,13 @@ export default function AdminPage() {
         </TabsList>
 
         <TabsContent value="pending" className="mt-6 space-y-3">
+          {pending.length > 1 && (
+            <div className="flex justify-end">
+              <Button size="sm" onClick={() => approveAll(pending)}>
+                <UserCheck className="size-4" /> Approve all ({pending.length})
+              </Button>
+            </div>
+          )}
           {pending.length === 0 ? (
             <EmptyState icon={CheckCircle2} text="No pending applications — all caught up." />
           ) : (
