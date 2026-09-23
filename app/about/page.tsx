@@ -43,9 +43,9 @@ const CONVENORS = [
   {
     name: "Dr Shan Jiang",
     role: "Co-Convenor",
-    affiliation: "MUCHE, Macquarie University",
+    affiliation: "Deakin University",
     photo: "https://ahes.org.au/wp-content/uploads/2026/01/shan-jiang_2024.jpg",
-    bio: "Dr Shan Jiang is a health economist at MUCHE (Macquarie University Centre for the Health Economy), based in Sydney, Australia. His research focuses on equity-informative economic evaluation, especially distributional cost-effectiveness analysis (DCEA), economic evaluation methodology, and advanced economic evaluation modelling, with 50+ peer-reviewed publications in journals such as JAMA Network Open, Genetics in Medicine, BMJ Global Health, Value in Health, and PharmacoEconomics. One publication was selected for the Value in Health Paper of the Year Award (2025). He is a Brocher Foundation Visiting Research Fellow and Adjunct Research Fellow at the Shanghai Health Development Research Center.",
+    bio: "Dr Shan Jiang is a Research Fellow in health economics at Deakin University, Australia. His research focuses on equity-informative economic evaluation, especially distributional cost-effectiveness analysis (DCEA), economic evaluation methodology, and advanced economic evaluation modelling, with 50+ peer-reviewed publications in journals such as JAMA Network Open, Genetics in Medicine, BMJ Global Health, Value in Health, and PharmacoEconomics. One publication was selected for the Value in Health Paper of the Year Award (2025). He is a Brocher Foundation Visiting Research Fellow and Adjunct Research Fellow at the Shanghai Health Development Research Center.",
   },
 ];
 
