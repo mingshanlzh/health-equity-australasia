@@ -41,6 +41,28 @@ signup trigger, and the avatars storage bucket.
 Admin accounts: emails listed in `handle_new_user()` are auto-promoted to
 admin on signup; other members are approved from the `/admin` panel.
 
+## Downloadable files
+
+Put files for download (programs, slides, PDFs) in `public/files/`. They are
+served at `<site>/files/<name>`. In a post, link to the full URL:
+
+```md
+[Workshop program (PDF)](https://mingshanlzh.github.io/health-equity-australasia/files/program.pdf)
+```
+
+Links to this folder are shown as download buttons (see
+`components/Markdown.tsx`).
+
+## Icons
+
+- `app/icon1.ico`: browser-tab icon (16, 32, 48 and 64 px)
+- `app/icon.png`: 512 px icon
+- `app/apple-icon.png`: iOS home-screen icon
+
+Do not name the tab icon `favicon.ico`. Next.js serves that name at a fixed
+URL with no content hash, so browsers keep showing the old icon for days after
+the logo changes. Any `icon*` file gets a hashed URL and updates straight away.
+
 ## Deployment
 
 Every push to `main` builds and deploys to GitHub Pages. The site is served
