@@ -25,13 +25,16 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/lib/supabase";
 
+// Public files are served under the base path (empty on healthequityaustralasia.org).
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 const CONVENORS = [
   {
     name: "Dr Anita Lal",
     role: "Co-Convenor",
     affiliation: "Deakin Health Economics, Deakin University",
-    photo: "https://ahes.org.au/wp-content/uploads/2022/10/anita-2.jpg",
-    bio: "Dr Anita Lal is a Victorian Cancer Agency Early Career Research fellow at Deakin Health Economics, Deakin University. Her PhD, awarded in 2018, examined ways of incorporating equity into cost-effectiveness analysis for obesity prevention policies. Her current research focuses on health-related policies and programs to reduce inequities in healthcare utilisation and the distribution of cancers. Her fellowship, funded by the Victorian Government, is focused on the impacts and cost-effectiveness of targeted programs to increase bowel, breast and cervical cancer screening in under-screened culturally and linguistically diverse groups in Victoria. She is a member of the Victorian Comprehensive Cancer Centre Alliance Equity Advisory Group.",
+    photo: `${BASE_PATH}/convenors/anita-lal.jpg`,
+    bio: "Anita Lal is a Senior Research Fellow at Deakin Health Economics, Deakin University, who is passionate about generating evidence that supports fair, effective policy and helps improve population health. Her work focuses on using economic evaluation, linked datasets, and economic modelling to understand and reduce disparities in health outcomes across a wide range of public health areas, including cancer screening, obesity prevention, mental health and smoking cessation. She was an invited expert contributor to the Australian Health Technology Assessment (HTA) Methods Review, presenting on methods for incorporating equity considerations for Aboriginal and Torres Strait Islander peoples into HTA to the review Reference Committee. She held a Victorian Cancer Agency Early Career Fellowship (2021–2024), which examined the equity impacts and cost-effectiveness of targeted programs designed to increase cancer screening in priority populations. Her PhD, awarded in 2018, focused on incorporating equity into cost-effectiveness analysis for obesity prevention policies as part of the NHMRC-funded Centre for Research Excellence in Obesity Policy and Food Systems.",
   },
   {
     name: "Professor Dennis Petrie",
