@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Camera, Save, UserRound } from "lucide-react";
+import { Camera, KeyRound, Save, UserRound } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +22,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { initials } from "@/lib/authors";
 import { fmtDate, type Post } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 export default function AccountPage() {
   const { session, profile, loading, refreshProfile } = useAuth();
@@ -43,6 +44,25 @@ export default function AccountPage() {
   const [myPosts, setMyPosts] = useState<Post[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
   const [hydrated, setHydrated] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [savingPassword, setSavingPassword] = useState(false);
+  const [fromResetLink, setFromResetLink] = useState(false);
+
+  // "?reset=1" means the user came from a password-reset email.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("reset") === "1") {
+      setFromResetLink(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (fromResetLink && profile) {
+      document
+        .getElementById("password")
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [fromResetLink, profile]);
 
   useEffect(() => {
     if (profile && !hydrated) {
@@ -149,6 +169,28 @@ export default function AccountPage() {
     else {
       toast.success("Photo updated");
       refreshProfile();
+    }
+  }
+
+  async function changePassword(e: React.FormEvent) {
+    e.preventDefault();
+    if (newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("The two passwords do not match.");
+      return;
+    }
+    setSavingPassword(true);
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    setSavingPassword(false);
+    if (error) toast.error(`Could not change password: ${error.message}`);
+    else {
+      toast.success("Password changed");
+      setNewPassword("");
+      setConfirmPassword("");
+      setFromResetLink(false);
     }
   }
 
@@ -279,6 +321,57 @@ export default function AccountPage() {
             </div>
             <Button type="submit" disabled={saving}>
               <Save className="size-4" /> {saving ? "Saving…" : "Save profile"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      <Card
+        id="password"
+        className={cn("mt-8", fromResetLink && "border-primary ring-2 ring-primary/20")}
+      >
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <KeyRound className="size-5 text-primary" /> Password
+          </CardTitle>
+          <CardDescription>
+            {fromResetLink
+              ? "You opened a password reset link. Choose a new password to finish."
+              : "Change the password you use to sign in."}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={changePassword} className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="new-password">New password</Label>
+                <Input
+                  id="new-password"
+                  type="password"
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="At least 8 characters"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password">Confirm new password</Label>
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+            </div>
+            <Button type="submit" disabled={savingPassword}>
+              <KeyRound className="size-4" />{" "}
+              {savingPassword ? "Saving…" : "Change password"}
             </Button>
           </form>
         </CardContent>
