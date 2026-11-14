@@ -112,7 +112,7 @@ export default function MembersPage() {
             <button key={m.id} onClick={() => setSelected(m)} className="text-left">
               <Card className="h-full transition-all hover:-translate-y-1 hover:shadow-md">
                 <CardHeader>
-                  <div className="flex items-center gap-3">
+                  <div className="flex min-w-0 items-center gap-3">
                     <Avatar className="size-14 border">
                       <AvatarImage src={m.avatar_url ?? undefined} alt="" />
                       <AvatarFallback className="bg-primary/10 text-sm font-semibold text-primary">
@@ -123,7 +123,7 @@ export default function MembersPage() {
                       <CardTitle className="truncate text-base">
                         {m.display_name || "SIG member"}
                       </CardTitle>
-                      <CardDescription className="truncate">
+                      <CardDescription className="line-clamp-2">
                         {[m.position, m.affiliation].filter(Boolean).join(", ")}
                       </CardDescription>
                       {m.country && (
