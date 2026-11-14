@@ -33,12 +33,18 @@ export function authorName(
   return map[id]?.display_name || "SIG member";
 }
 
+// Titles are skipped, so "Dr Jane Doe" gives "JD" rather than "DJ".
+const TITLES = new Set([
+  "dr", "prof", "professor", "a/prof", "assoc", "associate", "adj", "adjunct",
+  "emeritus", "mr", "mrs", "ms", "miss", "mx", "sir", "dame",
+]);
+
 export function initials(name: string | null | undefined): string {
-  if (!name) return "?";
-  return name
-    .split(/\s+/)
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+  const all = (name ?? "").trim().split(/\s+/).filter(Boolean);
+  if (all.length === 0) return "?";
+  const words = all.filter((w) => !TITLES.has(w.toLowerCase().replace(/\.$/, "")));
+  const use = words.length > 0 ? words : all;
+  const first = use[0][0];
+  const last = use.length > 1 ? use[use.length - 1][0] : "";
+  return (first + last).toUpperCase();
 }
