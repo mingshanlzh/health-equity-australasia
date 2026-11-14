@@ -46,7 +46,11 @@ export default function LoginPage() {
       toast.error("Enter your email above first, then click reset.");
       return;
     }
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    // The link in the email opens the profile page, where a new password is set.
+    const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}${base}/account/?reset=1`,
+    });
     if (error) toast.error(error.message);
     else toast.success("Password reset email sent — check your inbox.");
   }
