@@ -10,6 +10,18 @@ import { Button } from "@/components/ui/button";
 //   [Workshop program (PDF)](https://<site>/files/program.pdf)
 // Content is only rendered in the browser (posts load from Supabase), so
 // reading window.location here is safe.
+
+// The site moved from mingshanlzh.github.io/health-equity-australasia to its
+// own domain in October 2026. Posts written before then link to the old
+// address, so those links are pointed at the current site.
+const OLD_SITE = /^https?:\/\/mingshanlzh\.github\.io\/health-equity-australasia(?=[/?#]|$)/i;
+
+function toCurrentSite(href: string): string {
+  if (typeof window === "undefined" || !OLD_SITE.test(href)) return href;
+  const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+  return window.location.origin + base + (href.replace(OLD_SITE, "") || "/");
+}
+
 function isSiteFile(href: string): boolean {
   if (typeof window === "undefined") return false;
   try {
@@ -25,7 +37,8 @@ function isSiteFile(href: string): boolean {
 
 const components: Components = {
   a(props) {
-    const { node, href, children, ...rest } = props;
+    const { node, href: rawHref, children, ...rest } = props;
+    const href = rawHref ? toCurrentSite(rawHref) : rawHref;
     if (href && isSiteFile(href)) {
       return (
         <Button asChild variant="outline" size="sm" className="no-underline!">
